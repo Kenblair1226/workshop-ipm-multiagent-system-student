@@ -1,0 +1,42 @@
+{
+  "name": "${S3_KNOWLEDGE_SOURCE_NAME}",
+  "kind": "mcpServer",
+  "description": "Live read-only S3 access through a prefix-bound proxy.",
+  "mcpServerParameters": {
+    "serverURL": "${S3_MCP_SERVER_URL}",
+    "authentication": {
+      "kind": "storedHeaders",
+      "storedHeadersParameters": {
+        "headers": {
+          "Authorization": "Bearer ${S3_MCP_API_KEY}"
+        }
+      }
+    },
+    "tools": [
+      {
+        "name": "list_objects",
+        "outputParsing": {
+          "kind": "json",
+          "jsonParameters": {
+            "documentsPath": "$.documents[*]",
+            "includeContext": false
+          }
+        },
+        "inclusionMode": "reranked",
+        "maxOutputTokens": 1000
+      },
+      {
+        "name": "read_object",
+        "outputParsing": {
+          "kind": "json",
+          "jsonParameters": {
+            "documentsPath": "$.documents[*]",
+            "includeContext": false
+          }
+        },
+        "inclusionMode": "reranked",
+        "maxOutputTokens": 2400
+      }
+    ]
+  }
+}

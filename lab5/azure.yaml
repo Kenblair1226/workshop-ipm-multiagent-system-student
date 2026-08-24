@@ -1,0 +1,37 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+
+requiredVersions:
+  extensions:
+    azure.ai.agents: ">=1.0.0-beta.4"
+
+name: qvn-cross-cloud-grounding
+resourceGroup: ${AZURE_RESOURCE_GROUP}
+
+services:
+  qvn-cross-cloud-grounding:
+    host: azure.ai.agent
+    project: hosted-agent
+    language: python
+    codeConfiguration:
+      runtime: python_3_13
+      entryPoint: main.py
+      dependencyResolution: remote_build
+    kind: hosted
+    name: qvn-cross-cloud-grounding
+    displayName: Cross-cloud Grounding Agent
+    description: >-
+      Hosted Agent that reaches one Foundry Toolbox endpoint and uses the
+      knowledge_base_retrieve tool to ground answers across Azure Blob, AWS S3,
+      and Google Cloud Storage.
+    protocols:
+      - protocol: responses
+        version: "2.0.0"
+    environmentVariables:
+      - name: AZURE_AI_MODEL_DEPLOYMENT_NAME
+        value: ${AZURE_AI_MODEL_DEPLOYMENT_NAME}
+      - name: TOOLBOX_ENDPOINT
+        value: ${TOOLBOX_ENDPOINT}
+    container:
+      resources:
+        cpu: "0.5"
+        memory: 1Gi

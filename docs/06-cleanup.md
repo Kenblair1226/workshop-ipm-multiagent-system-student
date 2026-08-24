@@ -1,13 +1,16 @@
 # 收尾與清理
 
-**適用情境**：完成 Lab 4 後，離開前清理本課程建立的資源。
-**完成條件**：刪除本課程建立的 agent、Container Registry 與 Azure Bot，並保留既有資產。
+**適用情境**：完成 Lab 5 後，離開前清理本課程建立的資源。
+**完成條件**：刪除本課程建立的 agent、Container Registry、Azure Bot 與跨雲
+grounding 資源，並保留既有資產。
 
 ---
 
 ## 目標
 
-課程建立的資源可能持續產生費用。刪除 agent 後，還要移除 Lab 3 建立的 Container Registry 與 Lab 4 建立的 Azure Bot。
+課程建立的資源可能持續產生費用。刪除 agent 後，還要移除 Lab 3 建立的
+Container Registry、Lab 4 建立的 Azure Bot，以及 Lab 5 建立的 knowledge
+base、toolbox、connections 與 S3 proxy。
 
 ---
 
@@ -80,6 +83,20 @@ azd down
 
 到 Azure portal → 你的資源群組 → 找名稱含 `ipm-review` 的 **Azure Bot** 資源 → 刪除。
 
+### 跨雲 Grounding（Lab 5 建立）
+
+依 [Lab 5 清理步驟](05-lab5-cross-cloud-grounding.md#清理)先刪 Agent 與 Toolbox，
+再執行：
+
+```bash
+cd lab5
+uv run python -m foundry_iq.provision delete
+```
+
+確認 GCS custom OAuth connection、S3 proxy 與它的 workload role/policy、三份 sample
+object 也已刪除。Native Blob knowledge source 產生的 data source、skillset、indexer
+與 index 會隨 knowledge source 刪除，原始 Blob 需另行刪除。
+
 ---
 
 ## 驗收
@@ -89,6 +106,8 @@ azd down
 - [ ] 沒有 `qvn-` 開頭的 agent（Foundry 專案的 Agents 清單）
 - [ ] 沒有本課程建立的 Container Registry
 - [ ] 沒有本課程建立的 Azure Bot
+- [ ] 沒有 `cross-cloud-*` Knowledge Base、knowledge source、Toolbox 或 connection
+- [ ] 沒有本課程建立的 S3 proxy、workload role/policy 與三份 sample object
 - [ ] **你原本就有的 Foundry 專案、模型部署與 agent 都還在**
 
 清理不應影響既有資產。若有既有資產消失，請立即停止後續操作。
@@ -150,5 +169,5 @@ hosted agent 與一般 web 應用不同，依同時存在的 session 數擴展�
 
 ## 下一步
 
-[如果你卡住了](06-fallback.md#會後重跑)有完整的重跑步驟，
+[如果你卡住了](07-fallback.md#會後重跑)有完整的重跑步驟，
 以及 [solutions/](../solutions/README.md) 的完成版程式碼。

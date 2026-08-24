@@ -40,6 +40,8 @@ dist/
 coverage/
 test-results/
 playwright-report/
+toolbox.resolved.yaml
+retrieve.json
 
 # Logs and temporary files
 *.log

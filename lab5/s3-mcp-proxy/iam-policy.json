@@ -1,0 +1,24 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ListOnlyApprovedPrefix",
+      "Effect": "Allow",
+      "Action": "s3:ListBucket",
+      "Resource": "arn:aws:s3:::<approved-bucket>",
+      "Condition": {
+        "StringLike": {
+          "s3:prefix": [
+            "<approved-prefix-without-trailing-slash>/*"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "ReadOnlyApprovedPrefixObjects",
+      "Effect": "Allow",
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::<approved-bucket>/<approved-prefix-without-trailing-slash>/*"
+    }
+  ]
+}

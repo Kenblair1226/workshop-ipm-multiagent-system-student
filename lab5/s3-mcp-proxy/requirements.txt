@@ -1,0 +1,3 @@
+boto3==1.43.72
+mcp[cli]==2.0.0
+python-dotenv==1.2.2

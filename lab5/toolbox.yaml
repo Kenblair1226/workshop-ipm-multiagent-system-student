@@ -1,0 +1,10 @@
+description: Cross-cloud Foundry IQ knowledge base behind one curated endpoint
+tools:
+  - type: mcp
+    name: knowledge_base
+    server_label: knowledge_base
+    server_url: ${KB_MCP_ENDPOINT}
+    project_connection_id: cross-cloud-kb-mcp
+    allowed_tools:
+      - knowledge_base_retrieve
+    require_approval: never

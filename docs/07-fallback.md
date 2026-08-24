@@ -38,6 +38,7 @@ preflight 六項皆通過時，使用完成版程式碼即可繼續；否則先�
 | [lab1_prompt.md](../solutions/lab1_prompt.md) | Lab 1 的 agent 名稱、instructions、response format |
 | [lab2/](../solutions/lab2/)                   | 四個 agent 的定義、Handoff 拓撲、建立腳本、進入點  |
 | [lab3/](../solutions/lab3/)                   | Dockerfile、azd 設定、agent manifest、基礎設施     |
+| [lab5/](../lab5/)                             | Foundry IQ、Hosted Agent、S3 MCP proxy、sample data |
 
 ### 2. 講師示範的關鍵步驟截圖
 
@@ -122,7 +123,22 @@ azd ai agent show
 重點兩件事：Developer name **≤ 32 字元**、Publish options 選 **Direct publish**、
 範圍選 **「Just you」**。
 
-### 步驟六：清理
+### 步驟六：Lab 5
+
+Lab 5 是獨立目錄，不覆蓋前四關程式碼：
+
+```bash
+cd lab5
+cp .env.example .env
+uv sync --dev
+uv run pytest
+uv run python -m foundry_iq.provision plan
+```
+
+依 [Lab 5 講義](05-lab5-cross-cloud-grounding.md)完成三朵雲的權限、sample upload、
+GCS OAuth、S3 MCP proxy、Knowledge Base、Toolbox 與 Hosted Agent。
+
+### 步驟七：清理
 
 驗證完就把課程建立的資源刪掉，避免持續計費：
 
@@ -151,4 +167,5 @@ uv run python -m registry.cleanup
 ## 其他資源
 
 - 各 Lab 講義末尾的「常見問題排除」表
-- [疑難排解指南](../references/troubleshooting_guide.md)
+- Foundry portal 的 Tracing、各 CLI 的完整錯誤訊息，以及
+  [Lab 5 常見問題排除](05-lab5-cross-cloud-grounding.md#常見問題排除)

@@ -76,9 +76,31 @@ deploy/scripts/       azd 環境自動匯入工具
 
 ---
 
+## Lab 5 卡住
+
+Lab 5 是獨立、完整的 [`lab5/`](../lab5/) 目錄，不會覆蓋 `src/` 或 `deploy/`。
+先確認本機 payload 與 proxy 測試：
+
+```bash
+cd lab5
+uv sync --dev
+uv run pytest
+
+cd s3-mcp-proxy
+uv sync --dev
+uv run pytest
+```
+
+再依 [Lab 5 講義](../docs/05-lab5-cross-cloud-grounding.md)填 `.env`、執行
+`foundry_iq.provision plan/apply/check`，並完成人工的 Google OAuth consent 與三朵雲
+RBAC/IAM。
+
+---
+
 ## 這些檔案跟 `src/` 是什麼關係
 
-**完全相同的內容。** 它們是同一份程式碼的副本，方便你一行指令救回來。
+Lab 1–3 的內容與 `src/`／`deploy/` 完全相同，是方便一行指令救回來的副本。
+Lab 5 則直接使用獨立的 `lab5/`，不需要再複製一份。
 
 `solutions/lab1_prompt.md` 更嚴格：它的內容取自 `src/agents/coding.py`，
 逐字一致。若兩者出現差異，以 `src/agents/coding.py` 為準。

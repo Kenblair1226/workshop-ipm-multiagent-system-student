@@ -155,5 +155,7 @@ Teams 端的 session 邊界對應 **Teams 原生的對話識別碼**：
 
 ## 下一步
 
-- [收尾與清理](05-cleanup.md)——離開前把資源刪乾淨
-- [如果你卡住了](06-fallback.md)——會後自行重跑的完整步驟
+- [Lab 5：Foundry IQ 跨雲 Grounding](05-lab5-cross-cloud-grounding.md)——用一個
+  Knowledge Base 安全連接 Azure Blob、AWS S3 與 GCS
+- [收尾與清理](06-cleanup.md)——離開前把資源刪乾淨
+- [如果你卡住了](07-fallback.md)——會後自行重跑的完整步驟

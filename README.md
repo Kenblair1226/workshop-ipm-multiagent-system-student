@@ -1,6 +1,8 @@
 # IPM Multiagent System 技轉工作坊
 
-用 Microsoft Agent Framework 與 Microsoft Foundry，從零建出一個 Multiagent system，並部署到 Foundry hosted agent、發布到 Microsoft Teams。
+用 Microsoft Agent Framework 與 Microsoft Foundry，從零建出一個 Multiagent
+system，部署到 Foundry hosted agent、發布到 Microsoft Teams，最後以 Foundry IQ
+安全連接 Azure Blob、AWS S3 與 Google Cloud Storage。
 
 **對象**：有 Python 基礎、AI 代理人基礎觀念的 AI 開發者
 
@@ -32,17 +34,19 @@ flowchart LR
 
 ## 課程結構
 
-| 講義                                                      | 內容                           |
-| --------------------------------------------------------- | ------------------------------ |
-| [00 Lab 0：環境驗證](docs/00-lab0-env-check.md)           | 環境、權限、`.env`、preflight  |
-| [01 Lab 1：單一 Agent](docs/01-lab1-single-agent.md)      | 在 portal 手動建立第一個 agent |
-| [02 Lab 2：多代理與 Handoff](docs/02-lab2-multi-agent.md) | 程式碼建立、拓撲、DevUI        |
-| [03 Lab 3：部署到 Azure](docs/03-lab3-deploy.md)          | 容器化、`azd`、traces          |
-| [04 Lab 4：發布到 Teams](docs/04-lab4-publish-teams.md)   | Direct publish、1:1 對話       |
-| [05 收尾與清理](docs/05-cleanup.md)                       | 刪資源、誠實揭露               |
-| [06 如果你卡住了](docs/06-fallback.md)                    | 觀摩路徑與會後重跑（備援）     |
+| 講義                                                                | 內容                                      |
+| ------------------------------------------------------------------- | ----------------------------------------- |
+| [00 Lab 0：環境驗證](docs/00-lab0-env-check.md)                     | 環境、權限、`.env`、preflight             |
+| [01 Lab 1：單一 Agent](docs/01-lab1-single-agent.md)                | 在 portal 手動建立第一個 agent            |
+| [02 Lab 2：多代理與 Handoff](docs/02-lab2-multi-agent.md)           | 程式碼建立、拓撲、DevUI                   |
+| [03 Lab 3：部署到 Azure](docs/03-lab3-deploy.md)                    | 容器化、`azd`、traces                     |
+| [04 Lab 4：發布到 Teams](docs/04-lab4-publish-teams.md)             | Direct publish、1:1 對話                  |
+| [05 Lab 5：Foundry IQ 跨雲 Grounding](docs/05-lab5-cross-cloud-grounding.md) | Blob indexed source、S3/GCS MCP、Toolbox |
+| [06 收尾與清理](docs/06-cleanup.md)                                 | 刪資源、誠實揭露                          |
+| [07 如果你卡住了](docs/07-fallback.md)                              | 觀摩路徑與會後重跑（備援）                |
 
-[solutions/](solutions/README.md) 提供各 lab 的完成版，複製覆蓋即可繼續。
+[solutions/](solutions/README.md) 提供 Lab 1–3 的救援完成版；Lab 5 本身是獨立、
+可直接執行的 `lab5/`。
 
 ---
 
@@ -60,8 +64,9 @@ src/
 └── main.py          Lab 2・3     DevUI 與 Responses 兩種進入點
 
 deploy/              Lab 3・4     部署資產（Dockerfile、azd、agent manifest、infra）
+lab5/                Lab 5        Foundry IQ、Hosted Agent、S3 MCP proxy、sample data
 docs/                全程         講義
-solutions/           備援         各關完成版（救援用）
+solutions/           備援         Lab 1–3 完成版（救援用）
 ```
 
 各 Lab 會用到的指令：
@@ -73,6 +78,7 @@ solutions/           備援         各關完成版（救援用）
 | Lab 2 | `uv run python -m registry.create_agents`、`uv run python main.py`（DevUI）        |
 | Lab 3 | `azd provision`、`azd deploy`（容器內跑的是 `main.py --responses`）                |
 | Lab 4 | Foundry portal 發布，加上 `azd ai agent show` 確認狀態                             |
+| Lab 5 | `python -m foundry_iq.provision`、S3 MCP proxy、Foundry Toolbox                    |
 | 收尾  | `uv run python -m registry.cleanup`、`azd down`                                    |
 
 ---
@@ -190,6 +196,22 @@ Foundry portal → Agents → `qvn-ipm-review` → **Publish**
 
 ---
 
+## 跨雲 Grounding
+
+Lab 5 以一個 Foundry IQ Knowledge Base 協調三個來源：
+
+- Azure Blob 使用原生 indexed knowledge source，由 Azure AI Search 建 data source、
+  indexer 與 search index
+- GCS 使用 Google 官方 remote MCP 與 Foundry custom OAuth project connection
+- S3 使用本 repository 提供的 prefix-bound、唯讀 MCP proxy，不暴露
+  `aws___run_script`
+
+Hosted Agent 只連 Foundry Toolbox，且只允許 `knowledge_base_retrieve`。完整實作、
+權限、部署、四題驗收與清理見
+[Lab 5](docs/05-lab5-cross-cloud-grounding.md)。
+
+---
+
 ## 清理
 
 ```bash
@@ -198,7 +220,8 @@ uv run python -m registry.cleanup            # 先看要刪什麼
 uv run python -m registry.cleanup --confirm  # 真的刪
 ```
 
-Container Registry 與 Bot Service 要另外處理，見 [收尾與清理](docs/05-cleanup.md)。
+Container Registry、Bot Service 與 Lab 5 跨雲資源要另外處理，見
+[收尾與清理](docs/06-cleanup.md)。
 
 ---
 
@@ -215,7 +238,7 @@ Container Registry 與 Bot Service 要另外處理，見 [收尾與清理](docs/
 | 休息後第一則訊息很慢              | 閒置 15 分鐘被回收，冷啟動中；不是壞掉                           |
 | 改版後行為還是舊的                | `azd ai agent sessions delete <id>`；只開新對話不夠              |
 
-環境本身修不好時走 [觀摩路徑](docs/06-fallback.md)。
+環境本身修不好時走 [觀摩路徑](docs/07-fallback.md)。
 
 ---
 
@@ -247,6 +270,9 @@ Container Registry 與 Bot Service 要另外處理，見 [收尾與清理](docs/
 3. [Microsoft Agent Framework – Overview](https://learn.microsoft.com/en-us/agent-framework/overview/?pivots=programming-language-python)
 4. [Hands-on Lab: Microsoft Agent Framework with Microsoft Foundry](https://moaw.dev/workshop/gh:microsoft/hands-on-lab-agent-framework-with-microsoft-foundry/main/docs/) (300分鐘)
 5. [Hands-on Lab: Develop AI Agents in Azure (L300)](https://microsoftlearning.github.io/mslearn-ai-agents/) (360分鐘)
+6. [Foundry IQ MCP Server knowledge sources](https://learn.microsoft.com/azure/search/agentic-knowledge-source-how-to-mcp-server)
+7. [Google Cloud Storage MCP](https://cloud.google.com/storage/docs/use-cloud-storage-mcp)
+8. [AWS MCP tools](https://docs.aws.amazon.com/agent-toolkit/latest/userguide/understanding-mcp-server-tools.html)
 
 ---
 

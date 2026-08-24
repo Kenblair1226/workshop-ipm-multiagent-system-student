@@ -1,0 +1,32 @@
+{
+  "name": "${KNOWLEDGE_BASE_NAME}",
+  "description": "Cross-cloud grounding over indexed Blob and live object-store MCP sources.",
+  "retrievalInstructions": "Route Azure questions to the Blob source, AWS questions to S3, GCP questions to GCS, and cross-cloud questions to all relevant sources.",
+  "answerInstructions": "Answer only from retrieved evidence and cite every material claim.",
+  "outputMode": "answerSynthesis",
+  "knowledgeSources": [
+    {
+      "name": "${AZURE_BLOB_KNOWLEDGE_SOURCE_NAME}"
+    },
+    {
+      "name": "${S3_KNOWLEDGE_SOURCE_NAME}"
+    },
+    {
+      "name": "${GCS_KNOWLEDGE_SOURCE_NAME}"
+    }
+  ],
+  "models": [
+    {
+      "kind": "azureOpenAI",
+      "azureOpenAIParameters": {
+        "resourceUri": "${AZURE_OPENAI_ENDPOINT}",
+        "deploymentId": "${AZURE_AI_MODEL_DEPLOYMENT_NAME}",
+        "modelName": "${AZURE_AI_MODEL_NAME}"
+      }
+    }
+  ],
+  "encryptionKey": null,
+  "retrievalReasoningEffort": {
+    "kind": "low"
+  }
+}

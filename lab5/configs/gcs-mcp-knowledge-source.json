@@ -1,0 +1,45 @@
+{
+  "name": "${GCS_KNOWLEDGE_SOURCE_NAME}",
+  "kind": "mcpServer",
+  "description": "Live read-only Google Cloud Storage object access.",
+  "mcpServerParameters": {
+    "serverURL": "https://storage.googleapis.com/storage/mcp",
+    "authentication": {
+      "kind": "foundryConnection",
+      "foundryConnectionParameters": {
+        "connectionId": "${GCS_FOUNDRY_CONNECTION_ID}"
+      }
+    },
+    "tools": [
+      {
+        "name": "list_objects",
+        "outputParsing": {
+          "kind": "auto"
+        },
+        "inclusionMode": "reranked",
+        "maxOutputTokens": 1000
+      },
+      {
+        "name": "read_object",
+        "outputParsing": {
+          "kind": "split",
+          "splitParameters": {
+            "textSplitMode": "pages",
+            "maximumPageLength": 2000,
+            "pageOverlapLength": 200
+          }
+        },
+        "inclusionMode": "reranked",
+        "maxOutputTokens": 2400
+      },
+      {
+        "name": "get_object_metadata",
+        "outputParsing": {
+          "kind": "auto"
+        },
+        "inclusionMode": "reranked",
+        "maxOutputTokens": 600
+      }
+    ]
+  }
+}

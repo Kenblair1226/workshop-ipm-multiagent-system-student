@@ -1,0 +1,14 @@
+{
+  "name": "${FOUNDRY_KB_CONNECTION_NAME}",
+  "type": "Microsoft.MachineLearningServices/workspaces/connections",
+  "properties": {
+    "authType": "ProjectManagedIdentity",
+    "category": "RemoteTool",
+    "target": "${KB_MCP_ENDPOINT}",
+    "isSharedToAll": true,
+    "audience": "https://search.azure.com/",
+    "metadata": {
+      "ApiType": "Azure"
+    }
+  }
+}
