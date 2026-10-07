@@ -66,8 +66,8 @@ az deployment sub create --subscription "$SUBSCRIPTION_ID" \
   --query properties.outputs
 ```
 
-把輸出的 `AZURE_AI_PROJECT_ENDPOINT.value` 和 `MODEL_DEPLOYMENT_NAME.value`
-寫入不進版控的 `src/.env`，再繼續下方的 azd 初始化與匯入步驟。
+把輸出的 `AZURE_AI_PROJECT_ENDPOINT.value` 寫入不進版控的 `src/.env` 的 `FOUNDRY_PROJECT_ENDPOINT`，
+並將 `MODEL_DEPLOYMENT_NAME.value` 寫入 `MODEL_DEPLOYMENT_NAME`，再繼續下方的 azd 初始化與匯入步驟。
 範本預設 `gpt-4.1-mini`（`2025-04-14`）、Global Standard、50K TPM；
 Global Standard 推論不保證留在資源所在區域。可用範本參數指定已確認支援的模型、
 版本與容量；不要只改模型名稱而未檢查版本與配額。
